@@ -13,5 +13,9 @@
 #include <string_view>
 
 namespace msxml_util {
-	MSXML2::IXMLDOMDocumentPtr loadDOMsmart(const wchar_t* path);
+	MSXML2::IXMLDOMDocumentPtr createDomObject();
+	HRESULT loadXmlFromFile(MSXML2::IXMLDOMDocumentPtr pXMLDom, const wchar_t* path);
+	HRESULT loadXmlFromString(MSXML2::IXMLDOMDocumentPtr pXMLDom, const wchar_t* xml);
+	HRESULT saveXmlToFile(MSXML2::IXMLDOMDocumentPtr pXMLDom, const wchar_t* path);
+
 }

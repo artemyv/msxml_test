@@ -50,13 +50,22 @@ int main() {
 
 int DoTheWork()
 {
-	//TBD
-	auto xml = msxml_util::loadDOMsmart(L"stocks.xml");
+	auto xml = msxml_util::createDomObject();
 	if (!xml) {
 		return -1;
 	}
 
+	auto hr = msxml_util::loadXmlFromFile(xml, L"stocks.xml");
+	if (FAILED(hr)) {
+		return -2;
+	}
+
 	fmt::print(L"XML DOM loaded from stocks.xml:\n{}\n", std::wstring_view((const wchar_t*)xml->xml, xml->xml.length()));
 
+	hr = msxml_util::saveXmlToFile(xml, L"stocks2.xml");
+	if (FAILED(hr)) {
+		return -3;
+	}
+	fmt::print(L"XML DOM saved to stocks2.xml\n");
 	return 0;
 }

@@ -9,35 +9,70 @@ namespace msxml_test
         // You can remove any or all of the following functions if their bodies would
         // be empty.
 
-        XmlTest() {
-            // You can do set-up work for each test here.
-        }
-
-        ~XmlTest() override {
-            // You can do clean-up work that doesn't throw exceptions here.
-        }
-
-        // If the constructor and destructor are not enough for setting up
+         // If the constructor and destructor are not enough for setting up
         // and cleaning up each test, you can define the following methods:
 
         void SetUp() override {
             // Code here will be called immediately after the constructor (right
             // before each test).
-            CoInitialize(NULL);
+            hr = CoInitialize(NULL);
         }
 
         void TearDown() override {
             // Code here will be called immediately after each test (right
             // before the destructor).
-            CoUninitialize();
+            if (SUCCEEDED(hr)) {
+                CoUninitialize();
+                hr = E_NOT_SET;
+            }
         }
-
+        HRESULT hr = E_NOT_SET;
         // Class members declared here can be used by all tests in the test suite
         // for Foo.
     };
-TEST_F(XmlTest, loadDOMsmart_FileNotFound) {
-	const auto res = msxml_util::loadDOMsmart(L"dummy.xml");
-	bool bSuccess = res;
-  EXPECT_FALSE(bSuccess);
+TEST_F(XmlTest, loadXmlFile_FileNotFound) {
+    auto dom = msxml_util::createDomObject();
+    bool bSuccess = dom;
+    EXPECT_TRUE(bSuccess);
+
+	const auto res = msxml_util::loadXmlFromFile(dom, L"dummy.xml");
+    EXPECT_TRUE(FAILED(res));
+}
+TEST_F(XmlTest, loadXmlFile_Stocks) {
+    auto dom = msxml_util::createDomObject();
+    bool bSuccess = dom;
+    EXPECT_TRUE(bSuccess);
+
+    const auto res = msxml_util::loadXmlFromFile(dom, L"stocks.xml");
+    EXPECT_TRUE(SUCCEEDED(res));
+}
+TEST_F(XmlTest, loadXmlString) {
+    auto dom = msxml_util::createDomObject();
+    bool bSuccess = dom;
+    EXPECT_TRUE(bSuccess);
+
+    const auto res = msxml_util::loadXmlFromString(dom, L"<stocks><stock attr=\"val1\">val2</stock></stocks>");
+    EXPECT_TRUE(SUCCEEDED(res));
+}
+TEST_F(XmlTest, loadXmlString_bad) {
+    auto dom = msxml_util::createDomObject();
+    bool bSuccess = dom;
+    EXPECT_TRUE(bSuccess);
+
+    const auto res = msxml_util::loadXmlFromString(dom, L"<stocks><stock attr=\"val1\">val2</stock2></stocks>");
+    EXPECT_TRUE(FAILED(res));
+}
+TEST_F(XmlTest, saveFile) {
+    auto dom = msxml_util::createDomObject();
+    bool bSuccess = dom;
+    EXPECT_TRUE(bSuccess);
+
+    auto res = msxml_util::loadXmlFromString(dom, L"<stocks><stock attr=\"val1\">val2</stock></stocks>");
+    EXPECT_TRUE(SUCCEEDED(res));
+
+    res = msxml_util::saveXmlToFile(dom, L"ut_file1.xml");
+    EXPECT_TRUE(SUCCEEDED(res));
+
+    //Todo - check file exists and contains valid xml
 }
 }
