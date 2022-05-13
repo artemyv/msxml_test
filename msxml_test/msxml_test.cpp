@@ -5,9 +5,59 @@
 #include <fmt/core.h>
 #pragma warning(default:4189)
 
-int main(int argc, const char* argv[]) {
-	if (argc > 0) {
-		fmt::print("Hello from {}\n", argv[0]);
+#pragma warning(disable:4471)
+#import <msxml6.dll>
+#include <msxml6.tlh> //already done by previous import - but for easier browsing
+#pragma warning(default:4471)
+
+static int DoTheWork();
+
+class CoInitializeWraper
+{
+	HRESULT hr;
+public:
+	CoInitializeWraper()
+	{
+		hr = CoInitialize(NULL);
+		if (FAILED(hr))
+		{
+			
+		}
 	}
+	~CoInitializeWraper()
+	{
+		if (SUCCEEDED(hr)) {
+			CoUninitialize();
+		}
+	}
+	operator bool() const
+	{
+		return SUCCEEDED(hr);
+	}
+
+	std::string what() {
+		return fmt::format("CoInitialize failed {}", hr);
+	}
+};
+
+int main() {
+	CoInitializeWraper co;
+	if (!co) {
+		fmt::print("{}\n", co.what());
+		return -1;
+	}
+	fmt::print("Initialized\n");
+
+	DoTheWork();
+
+	fmt::print("Finished\n");
+
+	return 0;
+}
+
+int DoTheWork()
+{
+	//TBD
+
 	return 0;
 }
