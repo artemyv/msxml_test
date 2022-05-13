@@ -1,14 +1,7 @@
 // msxml_test.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-#pragma warning(disable:4189)
-#include <fmt/core.h>
-#pragma warning(default:4189)
-
-#pragma warning(disable:4471)
-#import <msxml6.dll>
-#include <msxml6.tlh> //already done by previous import - but for easier browsing
-#pragma warning(default:4471)
+#include "XmlUtils.h"
 
 static int DoTheWork();
 
@@ -58,6 +51,12 @@ int main() {
 int DoTheWork()
 {
 	//TBD
+	auto xml = msxml_util::loadDOMsmart(L"stocks.xml");
+	if (!xml) {
+		return -1;
+	}
+
+	fmt::print(L"XML DOM loaded from stocks.xml:\n{}\n", std::wstring_view((const wchar_t*)xml->xml, xml->xml.length()));
 
 	return 0;
 }

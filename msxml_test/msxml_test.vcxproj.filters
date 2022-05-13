@@ -21,5 +21,18 @@
     <ClCompile Include="msxml_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="XmlUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="XmlUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\stocks.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
   </ItemGroup>
 </Project>
