@@ -17,5 +17,7 @@ namespace msxml_util {
 	HRESULT loadXmlFromFile(MSXML2::IXMLDOMDocumentPtr pXMLDom, const wchar_t* path);
 	HRESULT loadXmlFromString(MSXML2::IXMLDOMDocumentPtr pXMLDom, const wchar_t* xml);
 	HRESULT saveXmlToFile(MSXML2::IXMLDOMDocumentPtr pXMLDom, const wchar_t* path);
+	_bstr_t transformXmlToString(MSXML2::IXMLDOMDocumentPtr pXMLDom, MSXML2::IXMLDOMDocumentPtr pXSLDoc);
+	MSXML2::IXMLDOMDocumentPtr transformXmlToObject(MSXML2::IXMLDOMDocumentPtr pXMLDom, MSXML2::IXMLDOMDocumentPtr pXSLDoc);
 
 }

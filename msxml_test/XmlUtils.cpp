@@ -2,6 +2,9 @@
 
 static void showError(const std::wstring description, MSXML2::IXMLDOMDocumentPtr pXMLDom)
 {
+    if (!description.empty()) {
+        fmt::print(L"{}. ", description);
+    }
     // Failed to load xml
     const auto error = pXMLDom->parseError;
     if (error) {
@@ -13,14 +16,18 @@ static void showError(const std::wstring description, MSXML2::IXMLDOMDocumentPtr
             long Getlinepos ( );
             long Getfilepos ( );
         */
+        if (error->Getline() > 0) {
+            fmt::print(L"line {}: pos {}: ", error->Getline(), error->Getlinepos());
+        }
+        if (error->GeterrorCode() != 0) {
+            fmt::print(L"error {:#x} ", error->GeterrorCode());
+        }
         const auto reason = error->Getreason();
-        fmt::print(L"{}. {} at {}:{}\n", description,
-            std::wstring_view((const wchar_t*)reason, reason.length()), error->Getline(), error->Getlinepos());
+        if (reason.length() > 0) {
+            fmt::print(L"{} ", std::wstring_view((const wchar_t*)reason, reason.length()));
+        }
     }
-    else
-    {
-        fmt::print(L"{}.\n", description);
-    }
+    fmt::print("\n");
 }
 
 MSXML2::IXMLDOMDocumentPtr msxml_util::createDomObject()
@@ -29,7 +36,7 @@ MSXML2::IXMLDOMDocumentPtr msxml_util::createDomObject()
     HRESULT hr = pXMLDom.CreateInstance(__uuidof(MSXML2::DOMDocument60), NULL, CLSCTX_INPROC_SERVER);
     if (FAILED(hr))
     {
-        fmt::print("Failed to instantiate an XML DOM. Err {}\n", hr);
+        fmt::print("Failed to instantiate an XML DOM. Err {:#x}\n", hr);
         return {};
     }
     return pXMLDom;
@@ -55,7 +62,7 @@ HRESULT msxml_util::loadXmlFromFile(MSXML2::IXMLDOMDocumentPtr pXMLDom, const wc
     }
     catch (const _com_error& errorObject)
     {
-        fmt::print(L"Exception thrown, HRESULT: {} {}", errorObject.Error(), errorObject.ErrorMessage());
+        fmt::print(L"Failed to load DOM from {} Exception: {:#x} {}\n", path,  errorObject.Error(), errorObject.ErrorMessage());
         return errorObject.Error();
     }
 }
@@ -78,7 +85,7 @@ HRESULT msxml_util::loadXmlFromString(MSXML2::IXMLDOMDocumentPtr pXMLDom, const 
     }
     catch (const _com_error& errorObject)
     {
-        fmt::print(L"Exception thrown, HRESULT: {} {}", errorObject.Error(), errorObject.ErrorMessage());
+        fmt::print(L"Failed to load DOM from {}. Exception: {:#x} {}\n", xml,  errorObject.Error(), errorObject.ErrorMessage());
         return errorObject.Error();
     }
 }
@@ -95,13 +102,51 @@ HRESULT msxml_util::saveXmlToFile(MSXML2::IXMLDOMDocumentPtr pXMLDom,  const wch
         }
         else
         {
-            fmt::print(L"XML saving failed. Reason={}.\n", hr);
+            fmt::print(L"XML saving failed. Reason={:#x}.\n", hr);
             return hr;
         }
     }
     catch (const _com_error& errorObject)
     {
-        fmt::print(L"Exception thrown, HRESULT: {} {}", errorObject.Error(), errorObject.ErrorMessage());
+        fmt::print(L"XML saving failed. Exception: {:#x} {}\n", errorObject.Error(), errorObject.ErrorMessage());
         return errorObject.Error();
+    }
+}
+
+_bstr_t msxml_util::transformXmlToString(MSXML2::IXMLDOMDocumentPtr pXMLDom, MSXML2::IXMLDOMDocumentPtr pXSLDoc)
+{
+    try
+    {
+        // Transform the XSLT to an XML string.
+        const auto result = pXMLDom->transformNode(pXSLDoc);
+        return result;
+    }
+    catch (const _com_error& errorObject)
+    {
+        fmt::print(L"transformNode failed. Exception: {:#x} {}\n", errorObject.Error(), errorObject.ErrorMessage());
+        return {};
+    }
+}
+
+MSXML2::IXMLDOMDocumentPtr msxml_util::transformXmlToObject(MSXML2::IXMLDOMDocumentPtr pXMLDom, MSXML2::IXMLDOMDocumentPtr pXSLDoc)
+{
+    auto pXMLOut = msxml_util::createDomObject();
+
+    if (!pXMLOut)
+        return {};
+    try {
+        // Transform the XSLT to a DOM object.
+        const auto hr = pXMLDom->transformNodeToObject(pXSLDoc, pXMLOut.GetInterfacePtr());
+        if (FAILED(hr)) {
+            fmt::print(L"transformNodeToObject failed, HRESULT: {:#x}\n", hr);
+            return {};
+
+        }
+        return pXMLOut;
+    }
+    catch (const _com_error& errorObject)
+    {
+        fmt::print(L"transformNodeToObject failed. Exception: {:#x} {}\n", errorObject.Error(), errorObject.ErrorMessage());
+        return {};
     }
 }

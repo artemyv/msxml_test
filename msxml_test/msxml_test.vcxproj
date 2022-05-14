@@ -89,7 +89,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(SolutionDir)stocks.xml $(OutDir)</Command>
+      <Command>copy $(SolutionDir)stocks.xml $(OutDir)
+copy $(SolutionDir)stocks.xsl $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -111,7 +112,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(SolutionDir)stocks.xml $(OutDir)</Command>
+      <Command>copy $(SolutionDir)stocks.xml $(OutDir)
+copy $(SolutionDir)stocks.xsl $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -129,7 +131,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(SolutionDir)stocks.xml $(OutDir)</Command>
+      <Command>copy $(SolutionDir)stocks.xml $(OutDir)
+copy $(SolutionDir)stocks.xsl $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -151,7 +154,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(SolutionDir)stocks.xml $(OutDir)</Command>
+      <Command>copy $(SolutionDir)stocks.xml $(OutDir)
+copy $(SolutionDir)stocks.xsl $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -163,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\stocks.xml" />
+    <Xml Include="..\stocks.xsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

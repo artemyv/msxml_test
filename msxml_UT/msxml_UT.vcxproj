@@ -76,6 +76,9 @@
     </Link>
     <PostBuildEvent>
       <Command>setlocal
+copy $(SolutionDir)stocks.xml $(TargetDir)
+copy $(SolutionDir)stocks.xsl $(TargetDir)
+copy $(SolutionDir)stocks2.xsl $(TargetDir)
 cd $(TargetDir)
 $(TargetName)</Command>
     </PostBuildEvent>
@@ -99,6 +102,9 @@ $(TargetName)</Command>
     </Link>
     <PostBuildEvent>
       <Command>setlocal
+copy $(SolutionDir)stocks.xml $(TargetDir)
+copy $(SolutionDir)stocks.xsl $(TargetDir)
+copy $(SolutionDir)stocks2.xsl $(TargetDir)
 cd $(TargetDir)
 $(TargetName)</Command>
     </PostBuildEvent>
@@ -123,6 +129,9 @@ $(TargetName)</Command>
     </Link>
     <PostBuildEvent>
       <Command>setlocal
+copy $(SolutionDir)stocks.xml $(TargetDir)
+copy $(SolutionDir)stocks.xsl $(TargetDir)
+copy $(SolutionDir)stocks2.xsl $(TargetDir)
 cd $(TargetDir)
 $(TargetName)</Command>
     </PostBuildEvent>
@@ -147,6 +156,9 @@ $(TargetName)</Command>
     </Link>
     <PostBuildEvent>
       <Command>setlocal
+copy $(SolutionDir)stocks.xml $(TargetDir)
+copy $(SolutionDir)stocks.xsl $(TargetDir)
+copy $(SolutionDir)stocks2.xsl $(TargetDir)
 cd $(TargetDir)
 $(TargetName)</Command>
     </PostBuildEvent>

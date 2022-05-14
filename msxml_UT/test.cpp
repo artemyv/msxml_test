@@ -75,4 +75,65 @@ TEST_F(XmlTest, saveFile) {
 
     //Todo - check file exists and contains valid xml
 }
+
+TEST_F(XmlTest, tansform_positive) {
+    auto dom = msxml_util::createDomObject();
+    bool bSuccess = dom;
+    EXPECT_TRUE(bSuccess);
+
+    const auto res = msxml_util::loadXmlFromFile(dom, L"stocks.xml");
+    EXPECT_TRUE(SUCCEEDED(res));
+
+    auto dom2 = msxml_util::createDomObject();
+    bool bSuccess2 = dom2;
+    EXPECT_TRUE(bSuccess2);
+
+    const auto res2 = msxml_util::loadXmlFromFile(dom2, L"stocks.xsl");
+    EXPECT_TRUE(SUCCEEDED(res2));
+
+    const auto ret = msxml_util::transformXmlToString(dom, dom2);
+    EXPECT_TRUE(ret.length() > 0);
+
+}
+TEST_F(XmlTest, tansformobj_positive) {
+    auto dom = msxml_util::createDomObject();
+    bool bSuccess = dom;
+    EXPECT_TRUE(bSuccess);
+
+    const auto res = msxml_util::loadXmlFromFile(dom, L"stocks.xml");
+    EXPECT_TRUE(SUCCEEDED(res));
+
+    auto dom2 = msxml_util::createDomObject();
+    bool bSuccess2 = dom2;
+    EXPECT_TRUE(bSuccess2);
+
+    const auto res2 = msxml_util::loadXmlFromFile(dom2, L"stocks.xsl");
+    EXPECT_TRUE(SUCCEEDED(res2));
+
+    const auto ret = msxml_util::transformXmlToObject(dom, dom2);
+    bool bret = ret;
+    EXPECT_TRUE(bret);
+    EXPECT_TRUE(ret->xml.length() > 0);
+
+}
+
+TEST_F(XmlTest, tansformobj_negative) {
+    auto dom = msxml_util::createDomObject();
+    bool bSuccess = dom;
+    EXPECT_TRUE(bSuccess);
+
+    const auto res = msxml_util::loadXmlFromFile(dom, L"stocks.xml");
+    EXPECT_TRUE(SUCCEEDED(res));
+
+    auto dom2 = msxml_util::createDomObject();
+    bool bSuccess2 = dom2;
+    EXPECT_TRUE(bSuccess2);
+
+    const auto res2 = msxml_util::loadXmlFromFile(dom2, L"stocks2.xsl");
+    EXPECT_TRUE(SUCCEEDED(res2));
+
+    const auto ret = msxml_util::transformXmlToObject(dom, dom2);
+    bool bret = ret;
+    EXPECT_FALSE(bret);
+}
 }

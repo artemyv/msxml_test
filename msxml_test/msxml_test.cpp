@@ -29,7 +29,7 @@ public:
 	}
 
 	std::string what() {
-		return fmt::format("CoInitialize failed {}", hr);
+		return fmt::format("CoInitialize failed {:#x}", hr);
 	}
 };
 
@@ -62,10 +62,34 @@ int DoTheWork()
 
 	fmt::print(L"XML DOM loaded from stocks.xml:\n{}\n", std::wstring_view((const wchar_t*)xml->xml, xml->xml.length()));
 
-	hr = msxml_util::saveXmlToFile(xml, L"stocks2.xml");
+	auto xsl = msxml_util::createDomObject();
+	if (!xml) {
+		return -1;
+	}
+
+	hr = msxml_util::loadXmlFromFile(xsl, L"stocks.xsl");
+	if (FAILED(hr)) {
+		return -2;
+	}
+
+	fmt::print(L"XML DOM loaded from stocks.xsl:\n{}\n", std::wstring_view((const wchar_t*)xsl->xml, xsl->xml.length()));
+
+	const auto res = msxml_util::transformXmlToString(xml, xsl);
+	if (res.length() == 0) {
+		return -3;
+	}
+	fmt::print(L"Transformation result:\n{}\n", std::wstring_view((const wchar_t*)res, res.length()));
+
+	auto res_dom = msxml_util::transformXmlToObject(xml, xsl);
+	if (!res_dom) {
+		return -4;
+	}
+	fmt::print(L"XML DOM transformed to object:\n{}\n", std::wstring_view((const wchar_t*)res_dom->xml, res_dom->xml.length()));
+
+	hr = msxml_util::saveXmlToFile(res_dom, L"stocks.html");
 	if (FAILED(hr)) {
 		return -3;
 	}
-	fmt::print(L"XML DOM saved to stocks2.xml\n");
+	fmt::print(L"transformation result saved to stocks.html\n");
 	return 0;
 }
